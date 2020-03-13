@@ -41,7 +41,6 @@ export class FixedZoomComponent implements OnInit {
   }
 
   private zoomed() {
-    console.log(d3.event.transform.k);
     const t = d3.zoomIdentity
       .translate(this.width / 2, this.height / 2)
       .scale(d3.event.transform.k)
