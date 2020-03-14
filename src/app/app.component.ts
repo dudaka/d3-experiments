@@ -31,7 +31,12 @@ export class AppComponent {
     {
       title: 'Pan & Zoom Axes',
       url: '/pan-zoom-axes'
-    }
+    },
+    {
+      title: 'Programmatic Pan+Zoom',
+      url: '/programmatic-pan-zoom'
+    },
+
   ];
 
   constructor(private breakpointObserver: BreakpointObserver) {}
