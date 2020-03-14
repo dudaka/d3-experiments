@@ -27,6 +27,10 @@ export class AppComponent {
     {
       title: 'Zoom to Domain',
       url: '/zoom-to-domain'
+    },
+    {
+      title: 'Pan & Zoom Axes',
+      url: '/pan-zoom-axes'
     }
   ];
 
