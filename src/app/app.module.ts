@@ -17,12 +17,14 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatFormFieldModule, MatLabel} from '@angular/material/form-field';
 import { FixedZoomComponent } from './zoom/fixed-zoom/fixed-zoom.component';
 import { ConstrainedZoomComponent } from './zoom/constrained-zoom/constrained-zoom.component';
+import { ZoomToDomainComponent } from './zoom/zoom-to-domain/zoom-to-domain.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FixedZoomComponent,
     ConstrainedZoomComponent,
+    ZoomToDomainComponent,
   ],
   imports: [
     BrowserModule,

@@ -23,6 +23,10 @@ export class AppComponent {
     {
       title: 'Constrained Zoom',
       url: '/constrained-zoom'
+    },
+    {
+      title: 'Zoom to Domain',
+      url: '/zoom-to-domain'
     }
   ];
 
