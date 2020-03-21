@@ -1,0 +1,35 @@
+export interface EventCaptureOptions {
+  // mouseMove: PropTypes.bool.isRequired,
+  // zoom: PropTypes.bool.isRequired,
+  // pan: PropTypes.bool.isRequired,
+  // panSpeedMultiplier: PropTypes.number.isRequired,
+  // focus: PropTypes.bool.isRequired,
+  // useCrossHairStyleCursor: PropTypes.bool.isRequired,
+
+  // width: PropTypes.number.isRequired,
+  // height: PropTypes.number.isRequired,
+  // chartConfig: PropTypes.array,
+  // xScale: PropTypes.func.isRequired,
+  // xAccessor: PropTypes.func.isRequired,
+  // disableInteraction: PropTypes.bool.isRequired,
+
+  // getAllPanConditions: PropTypes.func.isRequired,
+
+  // onMouseMove: PropTypes.func,
+  // onMouseEnter: PropTypes.func,
+  // onMouseLeave: PropTypes.func,
+  // onZoom: PropTypes.func,
+  // onPinchZoom: PropTypes.func,
+  // onPinchZoomEnd: PropTypes.func.isRequired,
+  // onPan: PropTypes.func,
+  // onPanEnd: PropTypes.func,
+  // onDragStart: PropTypes.func,
+  // onDrag: PropTypes.func,
+  // onDragComplete: PropTypes.func,
+
+  // onClick: PropTypes.func,
+  // onDoubleClick: PropTypes.func,
+  // onContextMenu: PropTypes.func,
+  // onMouseDown: PropTypes.func,
+  // children: PropTypes.node,
+}

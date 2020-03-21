@@ -5,9 +5,18 @@ export interface ChartCanvasOptions {
   width: number;
   margin: { left: number, right: number, top: number, bottom: number };
   data: any[];
+  plotFull?: any[];
   xAccessor: Function;
-  xScale: Function;
-  xExtents: any[];
+  xScale: d3.ScaleTime<number, number>;
+  xExtents: any[] | Function;
+  useCrossHairStyleCursor: boolean;
+  padding: number | { left: number, right: number };
+  flipXScale: boolean;
+  clamp: string | boolean | Function;
+  pointsPerPxThreshold: number;
+  minPointsPerPxThreshold: number;
+  displayXAccessor: Function;
+  postCalculator: Function;
 }
 
 export function getCursorStyle(className: string) {
