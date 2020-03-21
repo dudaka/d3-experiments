@@ -13,7 +13,7 @@
         </mat-expansion-panel-header>
 
         <mat-nav-list>
-          <a mat-list-item *ngFor="let link of links"
+          <a mat-list-item *ngFor="let link of zoomLinks"
             [routerLink]="link.url" routerLinkActive="active">{{ link.title }}</a>
         </mat-nav-list>
 
@@ -21,10 +21,27 @@
       <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Self aware panel
+            Realtime Charts
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <p>I'm visible because I am open</p>
+        <mat-nav-list>
+          <a mat-list-item *ngFor="let link of realtimeLinks"
+            [routerLink]="link.url" routerLinkActive="active">{{ link.title }}</a>
+        </mat-nav-list>
+      </mat-expansion-panel>
+
+      <mat-expansion-panel expanded>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            My Candlestick
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <mat-nav-list>
+          <a mat-list-item *ngFor="let link of candlestickLinks"
+            [routerLink]="link.url" routerLinkActive="active">{{ link.title }}</a>
+        </mat-nav-list>
+
       </mat-expansion-panel>
     </mat-accordion>
   </mat-sidenav>

@@ -15,7 +15,7 @@ export class AppComponent {
       shareReplay()
     );
 
-  links = [
+  zoomLinks = [
     {
       title: 'Fixed Zoom',
       url: '/fixed-zoom'
@@ -37,6 +37,24 @@ export class AppComponent {
       url: '/programmatic-pan-zoom'
     },
 
+  ];
+
+  realtimeLinks = [
+    {
+      title: 'Realtime Chart',
+      url: '/realtime-chart'
+    },
+    {
+      title: 'Realtime Chart with Multiple Streams',
+      url: '/realtime-chart-multiple-streams'
+    },
+  ];
+
+  candlestickLinks = [
+    {
+      title: 'Candlestick Chart',
+      url: '/candlestick-chart'
+    }
   ];
 
   constructor(private breakpointObserver: BreakpointObserver) {}
