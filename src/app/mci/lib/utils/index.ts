@@ -1,3 +1,12 @@
+export function find(list, predicate, context = this) {
+  for (let i = 0; i < list.length; ++i) {
+    if (predicate.call(context, list[i], i, list)) {
+      return list[i];
+    }
+  }
+  return undefined;
+}
+
 export function getClosestItemIndexes(array, value, accessor, log = null) {
   let lo = 0;
   let hi = array.length - 1;

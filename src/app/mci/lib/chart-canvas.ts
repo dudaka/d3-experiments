@@ -4,50 +4,50 @@ import { chartCanvasOptionDefaults } from './options/chart-canvas-options-defaul
 import * as d3 from 'd3';
 import { functor, isDefined } from './utils';
 import evaluator from './scale/evaluator';
+import { Chart } from './chart';
 
 export class ChartCanvas {
 
   private chartCanvasOptions: ChartCanvasOptions;
   chartCanvasSvg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+  private charts: Chart[];
 
-  constructor(node: HTMLDivElement, options?: any) {
+  constructor(node: HTMLDivElement, charts: Chart[], options?: any) {
     this.chartCanvasOptions = {
       ...chartCanvasOptionDefaults,
       ...options
     };
 
+    this.charts = charts;
+
     const { fullData, ...state } = this.resetChart(true);
 
-    const { className, width, height, zIndex, margin } = this.chartCanvasOptions;
+    this.render(node);
 
+  }
+
+  private render(node: HTMLDivElement) {
+    const { className, width, height, zIndex, margin } = this.chartCanvasOptions;
     this.chartCanvasSvg = d3.select(node).append('svg')
       .attr('class', className)
       .attr('width', width)
       .attr('height', height)
       .style('position', 'absolute')
       .style('z-index', zIndex + 5);
-
     this.chartCanvasSvg.append('style')
       .attr('type', 'text/css')
       .text(getCursorStyle(className));
-
-
     const defs = this.chartCanvasSvg.append('defs');
-
     const clipPath = defs.append('clipPath')
       .attr('id', 'chart-area-clip');
-
     const dimensions = this.getDimensions();
-
     clipPath.append('rect')
       .attr('x', 0)
       .attr('y', 0)
       .attr('width', dimensions.width)
       .attr('height', dimensions.height);
-
     const g = this.chartCanvasSvg.append('g')
       .attr('transform', `translate(${margin.left + 0.5}, ${margin.top + 0.5})`);
-
     const eventCaptureOptions = {
       // useCrossHairStyleCursor={cursorStyle}
       // 				mouseMove={mouseMoveEvent && interaction}
@@ -76,9 +76,7 @@ export class ChartCanvas {
       // 				onPinchZoomEnd={this.handlePinchZoomEnd}
       // 				onPan={this.handlePan}
       // 				onPanEnd={this.handlePanEnd}
-    }
-
-
+    };
   }
 
   private resetChart(firstCalculation = false) {
@@ -92,6 +90,23 @@ export class ChartCanvas {
 
     const dimensions = this.getDimensions();
 
+    // const chartConfig = getChartConfigWithUpdatedYScales(
+    //   getNewChartConfig(dimensions, children),
+    //   { plotData, xAccessor, displayXAccessor, fullData },
+    //   xScale.domain()
+    // );
+
+    this.getNewChartConfig();
+
+  }
+
+  private getNewChartConfig() {
+
+    const dimensions = this.getDimensions();
+
+    const newChartConfigs = this.charts.map(chart => chart.getChartConfig(dimensions));
+
+    console.log(newChartConfigs);
 
   }
 
