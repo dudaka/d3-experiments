@@ -1,3 +1,21 @@
+// copied from https://github.com/lodash/lodash/blob/master/mapObject.js
+export function mapObject(object = {}, iteratee = d => d) {
+  const props = Object.keys(object);
+
+  // eslint-disable-next-line prefer-const
+  const result = new Array(props.length);
+
+  props.forEach((key, index) => {
+    // result[index] = iteratee(object[key], key, object);
+    result[index] = iteratee(object[key]);
+  });
+  return result;
+}
+
+export function isObject(d) {
+  return isDefined(d) && typeof d === 'object' && !Array.isArray(d);
+}
+
 export function find(list, predicate, context = this) {
   for (let i = 0; i < list.length; ++i) {
     if (predicate.call(context, list[i], i, list)) {

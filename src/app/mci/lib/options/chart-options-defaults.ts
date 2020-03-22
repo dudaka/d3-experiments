@@ -10,10 +10,10 @@ export const chartOptionDefaults = {
   yPan: true,
   yPanEnabled: false,
   onContextMenu: () => { },
-  yExtentsCalculator: (props: any, propName: string, currentClass: string) => {
-    if (isNotDefined(props.yExtents) && typeof props.yExtentsCalculator !== 'function') {
-      return new Error('yExtents or yExtentsCalculator must'
-        + ` be present on ${currentClass}. Validation failed.`);
-    }
-  }
+  // yExtentsCalculator: (props: any, propName: string, currentClass: string) => {
+  //   if (isNotDefined(props.yExtents) && typeof props.yExtentsCalculator !== 'function') {
+  //     return new Error('yExtents or yExtentsCalculator must'
+  //       + ` be present on ${currentClass}. Validation failed.`);
+  //   }
+  // }
 };

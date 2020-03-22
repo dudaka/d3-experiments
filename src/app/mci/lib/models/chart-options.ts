@@ -4,7 +4,7 @@ export interface ChartOptions {
   origin: any[] | Function;
   id: number | string;
   yExtents: any[] | Function;
-  yExtentsCalculator: Function;
+  yExtentsCalculator?: Function;
   onContextMenu: Function;
   yScale: d3.ScaleLinear<number, number>;
   flipYScale: boolean;
