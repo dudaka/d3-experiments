@@ -17,6 +17,11 @@ export interface ChartCanvasOptions {
   minPointsPerPxThreshold: number;
   displayXAccessor: Function;
   postCalculator: Function;
+  mouseMoveEvent: boolean;
+  zoomEvent: boolean;
+  panEvent: boolean;
+  defaultFocus: boolean;
+  disableInteraction: boolean;
 }
 
 export function getCursorStyle(className: string) {

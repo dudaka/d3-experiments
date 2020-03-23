@@ -1,3 +1,19 @@
+export function getClosestItem(array, value, accessor, log = false) {
+  const { left, right } = getClosestItemIndexes(array, value, accessor, log);
+
+  if (left === right) {
+    return array[left];
+  }
+
+  const closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
+    ? array[left]
+    : array[right];
+  if (log) {
+    console.log(array[left], array[right], closest, left, right);
+  }
+  return closest;
+}
+
 // copied from https://github.com/lodash/lodash/blob/master/mapObject.js
 export function mapObject(object = {}, iteratee = d => d) {
   const props = Object.keys(object);

@@ -5,9 +5,12 @@ import { isDefined } from '@angular/compiler/src/util';
 import { functor, find } from './utils';
 import shallowEqual from './utils/shallowEqual';
 
+import * as d3 from 'd3';
+
 export class Chart {
 
   private chartOptions: ChartOptions;
+  private chartComponents: ChartComponent[];
 
   constructor(chartComponents: ChartComponent[], options?: any) {
 
@@ -16,8 +19,7 @@ export class Chart {
       ...options
     };
 
-
-
+    this.chartComponents = chartComponents;
   }
 
   public getChartConfig(innerDimension: { width: number, height: number }, existingChartConfig = []) {
@@ -107,5 +109,15 @@ export class Chart {
       width,
       height: chartHeight
     };
+  }
+
+  render(chartsG: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    const { origin } = this.chartOptions;
+    const [x, y] = origin as any[];
+
+    const chartComponentsG = chartsG.append('g')
+      .attr('transform', `translate(${ x }, ${ y })`);
+
+
   }
 }

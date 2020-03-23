@@ -25,5 +25,10 @@ export const chartCanvasOptionDefaults = {
       return new Error('displayXAccessor has to be a function');
     }
   },
-  postCalculator: d => d
+  postCalculator: d => d,
+  mouseMoveEvent: true,
+  zoomEvent: true,
+  panEvent: true,
+  defaultFocus: true,
+  disableInteraction: false
 };

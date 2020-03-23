@@ -1,35 +1,35 @@
 export interface EventCaptureOptions {
-  // mouseMove: PropTypes.bool.isRequired,
-  // zoom: PropTypes.bool.isRequired,
-  // pan: PropTypes.bool.isRequired,
-  // panSpeedMultiplier: PropTypes.number.isRequired,
-  // focus: PropTypes.bool.isRequired,
-  // useCrossHairStyleCursor: PropTypes.bool.isRequired,
+  mouseMove: boolean;
+  zoom: boolean;
+  pan: boolean;
+  panSpeedMultiplier: number;
+  focus: boolean;
+  useCrossHairStyleCursor: boolean;
 
-  // width: PropTypes.number.isRequired,
-  // height: PropTypes.number.isRequired,
-  // chartConfig: PropTypes.array,
-  // xScale: PropTypes.func.isRequired,
-  // xAccessor: PropTypes.func.isRequired,
-  // disableInteraction: PropTypes.bool.isRequired,
+  width: number;
+  height: number;
+  chartConfig: any[];
+  xScale: Function;
+  xAccessor: Function;
+  disableInteraction: boolean;
 
-  // getAllPanConditions: PropTypes.func.isRequired,
+  getAllPanConditions: Function;
 
-  // onMouseMove: PropTypes.func,
-  // onMouseEnter: PropTypes.func,
-  // onMouseLeave: PropTypes.func,
-  // onZoom: PropTypes.func,
-  // onPinchZoom: PropTypes.func,
-  // onPinchZoomEnd: PropTypes.func.isRequired,
-  // onPan: PropTypes.func,
-  // onPanEnd: PropTypes.func,
-  // onDragStart: PropTypes.func,
-  // onDrag: PropTypes.func,
-  // onDragComplete: PropTypes.func,
+  onMouseMove: Function;
+  onMouseEnter: Function;
+  onMouseLeave: Function;
+  onZoom: Function;
+  onPinchZoom: Function;
+  onPinchZoomEnd: Function;
+  onPan: Function;
+  onPanEnd: Function;
+  onDragStart: Function;
+  onDrag: Function;
+  onDragComplete: Function;
 
-  // onClick: PropTypes.func,
-  // onDoubleClick: PropTypes.func,
-  // onContextMenu: PropTypes.func,
-  // onMouseDown: PropTypes.func,
+  onClick: Function;
+  onDoubleClick: Function;
+  onContextMenu: Function;
+  onMouseDown: Function;
   // children: PropTypes.node,
 }
