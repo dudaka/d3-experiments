@@ -58,7 +58,9 @@ export class CandlestickChartComponent implements OnInit {
     const charts: Chart[] = [];
     const chart = this.buildChart();
     charts.push(chart);
-    this.chartCanvas = new ChartCanvas(this.chartCanvasEl.nativeElement, charts, chartCanvasParams);
+
+    const chartCanvas = ChartCanvas.getInstance();
+    chartCanvas.build(this.chartCanvasEl.nativeElement, charts, chartCanvasParams);
   }
 
   private buildChart() {

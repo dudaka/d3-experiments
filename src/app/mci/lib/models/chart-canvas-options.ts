@@ -1,27 +1,28 @@
 export interface ChartCanvasOptions {
   className: string;
-  zIndex: number;
-  height: number;
-  width: number;
-  margin: { left: number, right: number, top: number, bottom: number };
-  data: any[];
+  zIndex?: number;
+  height?: number;
+  width?: number;
+  margin?: { left: number, right: number, top: number, bottom: number };
+  data?: any[];
   plotFull?: any[];
-  xAccessor: Function;
-  xScale: d3.ScaleTime<number, number>;
-  xExtents: any[] | Function;
-  useCrossHairStyleCursor: boolean;
-  padding: number | { left: number, right: number };
-  flipXScale: boolean;
-  clamp: string | boolean | Function;
-  pointsPerPxThreshold: number;
-  minPointsPerPxThreshold: number;
-  displayXAccessor: Function;
-  postCalculator: Function;
-  mouseMoveEvent: boolean;
-  zoomEvent: boolean;
-  panEvent: boolean;
-  defaultFocus: boolean;
-  disableInteraction: boolean;
+  xAccessor?: Function;
+  xScale?: d3.ScaleTime<number, number>;
+  xExtents?: any[] | Function;
+  useCrossHairStyleCursor?: boolean;
+  padding?: number | { left: number, right: number };
+  flipXScale?: boolean;
+  clamp?: string | boolean | Function;
+  pointsPerPxThreshold?: number;
+  minPointsPerPxThreshold?: number;
+  displayXAccessor?: Function;
+  postCalculator?: Function;
+  mouseMoveEvent?: boolean;
+  zoomEvent?: boolean;
+  panEvent?: boolean;
+  defaultFocus?: boolean;
+  disableInteraction?: boolean;
+  maintainPointsPerPixelOnResize?: boolean;
 }
 
 export function getCursorStyle(className: string) {

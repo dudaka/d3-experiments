@@ -1,6 +1,6 @@
 
 
-import { head } from ".";
+import { head } from '.';
 
 /**
  * Bar width is based on the amount of items in the plot data and the distance between the first and last of those

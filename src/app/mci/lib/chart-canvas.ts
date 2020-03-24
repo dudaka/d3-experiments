@@ -10,8 +10,11 @@ import zipper from './utils/zipper';
 import { flattenDeep } from 'lodash';
 import { Autobind } from './utils/autobind';
 import { EventCapture } from './event-capture';
+import { Subject } from 'rxjs';
 
 export class ChartCanvas {
+
+  private static instance: ChartCanvas;
 
   private chartCanvasOptions: ChartCanvasOptions;
   chartCanvasSvg: d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -21,7 +24,44 @@ export class ChartCanvas {
   private subscriptions = [];
   private mutableState: any;
 
-  constructor(node: HTMLDivElement, charts: Chart[], options?: any) {
+  private constructor() {
+    this.chartCanvasOptions = {
+      ...chartCanvasOptionDefaults
+    };
+  }
+
+  public static getInstance(): ChartCanvas {
+    if (!ChartCanvas.instance) {
+      ChartCanvas.instance = new ChartCanvas();
+    }
+
+    return ChartCanvas.instance;
+  }
+
+  // constructor(node: HTMLDivElement, charts: Chart[], options?: any) {
+  //   this.chartCanvasOptions = {
+  //     ...chartCanvasOptionDefaults,
+  //     ...options
+  //   };
+
+  //   this.charts = charts;
+
+  //   const { fullData, ...state } = this.resetChart(true);
+
+  //   this.state = {
+  //     ...state
+  //   };
+
+  //   this.mutableState = {};
+
+  //   this.fullData = fullData;
+
+  //   this.render(node);
+
+  // }
+
+  build(node: HTMLDivElement, charts: Chart[], options?: any) {
+
     this.chartCanvasOptions = {
       ...chartCanvasOptionDefaults,
       ...options
@@ -40,33 +80,26 @@ export class ChartCanvas {
     this.fullData = fullData;
 
     this.render(node);
-
   }
+
 
   private render(node: HTMLDivElement) {
     const { className, width, height, zIndex, margin } = this.chartCanvasOptions;
-
     this.chartCanvasSvg = d3.select(node).append('svg')
       .attr('class', className)
       .attr('width', width)
       .attr('height', height)
       .style('position', 'absolute')
       .style('z-index', zIndex + 5);
-
     this.chartCanvasSvg.append('style')
       .attr('type', 'text/css')
       .text(getCursorStyle(className));
-
     this.addClipPathes();
-
     const g = this.chartCanvasSvg.append('g')
       .attr('transform', `translate(${margin.left + 0.5}, ${margin.top + 0.5})`);
-
     this.addEventCapture(g);
-
     this.addCharts(g);
   }
-
 
   private addCharts(g: d3.Selection<SVGGElement, unknown, null, undefined>) {
     const { className } = this.chartCanvasOptions;

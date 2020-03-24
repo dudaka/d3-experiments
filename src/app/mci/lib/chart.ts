@@ -6,6 +6,8 @@ import { functor, find } from './utils';
 import shallowEqual from './utils/shallowEqual';
 
 import * as d3 from 'd3';
+import { CandlestickSeries } from './series/candlestick-series';
+import { ChartCanvas } from './chart-canvas';
 
 export class Chart {
 
@@ -118,6 +120,12 @@ export class Chart {
     const chartComponentsG = chartsG.append('g')
       .attr('transform', `translate(${ x }, ${ y })`);
 
-
+    // console.log(this.chartComponents);
+    this.chartComponents.map(component => {
+      // console.log(typeof component);
+      if (component instanceof CandlestickSeries) {
+        component.render(chartComponentsG);
+      }
+    });
   }
 }
