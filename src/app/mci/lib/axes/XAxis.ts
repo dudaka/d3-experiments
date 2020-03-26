@@ -1,4 +1,4 @@
-import { ChartComponent } from '../chart-component';
+import { ChartComponent } from '../api/chart-component';
 
 export class XAxis extends ChartComponent {
 

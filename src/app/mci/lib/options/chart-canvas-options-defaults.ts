@@ -32,3 +32,47 @@ export const chartCanvasOptionDefaults = {
   defaultFocus: true,
   disableInteraction: false
 };
+
+export function getCursorStyle(className: string) {
+  const tooltipStyle = `
+.${className}-grabbing-cursor {
+  pointer-events: all;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+.${className}-crosshair-cursor {
+  pointer-events: all;
+  cursor: crosshair;
+}
+.${className}-tooltip-hover {
+  pointer-events: all;
+  cursor: pointer;
+}
+.${className}-avoid-interaction {
+  pointer-events: none;
+}
+.${className}-enable-interaction {
+  pointer-events: all;
+}
+.${className}-tooltip {
+  pointer-events: all;
+  cursor: pointer;
+}
+.${className}-default-cursor {
+  cursor: default;
+}
+.${className}-move-cursor {
+  cursor: move;
+}
+.${className}-pointer-cursor {
+  cursor: pointer;
+}
+.${className}-ns-resize-cursor {
+  cursor: ns-resize;
+}
+.${className}-ew-resize-cursor {
+  cursor: ew-resize;
+}`;
+  return tooltipStyle;
+}

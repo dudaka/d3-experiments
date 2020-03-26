@@ -1,13 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import * as d3 from 'd3';
+
+import { tsv as d3Tsv } from 'd3-fetch';
+import { timeParse as d3TimeParse } from 'd3-time-format';
+import { scaleTime as d3ScaleTime } from 'd3-scale';
+import { utcDay as d3UtcDay } from 'd3-time';
+
 import { last } from '../lib/utils';
-import { ChartCanvas } from '../lib/chart-canvas';
-import { Chart } from '../lib/chart';
-import { ChartComponent } from '../lib/chart-component';
-import { XAxis } from '../lib/axes/XAxis';
-import { YAxis } from '../lib/axes/YAxis';
+import { ChartCanvas } from '../lib/api/chart-canvas';
 import { timeIntervalBarWidth } from '../lib/utils/barWidth';
-import { CandlestickSeries } from '../lib/series/candlestick-series';
+import { createChartCanvas } from '../lib/api/create-chart-canvas';
 
 @Component({
   selector: 'app-candlestick-chart',
@@ -23,8 +24,8 @@ export class CandlestickChartComponent implements OnInit {
 
   ngOnInit(): void {
 
-    d3.tsv('assets/data/MSFT.tsv').then((rows: d3.DSVRowArray<string>) => {
-      const parseDate = d3.timeParse('%Y-%m-%d');
+    d3Tsv('assets/data/MSFT.tsv').then((rows: d3.DSVRowArray<string>) => {
+      const parseDate = d3TimeParse('%Y-%m-%d');
 
       const data = rows.map((d: any) => {
         d.date = parseDate(d.date);
@@ -37,62 +38,55 @@ export class CandlestickChartComponent implements OnInit {
         return d;
       });
 
-      this.buildChartCanvas(data);
+      const chartCanvas = this.buildChartCanvas(data);
+      this.buildChart(chartCanvas);
     });
   }
 
   private buildChartCanvas(data: any[]) {
     const xAccessor = (d: any) => d.date;
-    const chartCanvasParams = {
+    const options = {
       data,
       width: 960,
       height: 500,
       margin: { left: 50, right: 50, top: 10, bottom: 30 },
       xAccessor,
-      xScale: d3.scaleTime(),
+      xScale: d3ScaleTime(),
       xExtents: [
         xAccessor(last(data)),
         xAccessor(data[data.length - 100])
       ]
     };
-    const charts: Chart[] = [];
-    const chart = this.buildChart();
-    charts.push(chart);
-
-    const chartCanvas = ChartCanvas.getInstance();
-    chartCanvas.build(this.chartCanvasEl.nativeElement, charts, chartCanvasParams);
+    return createChartCanvas(this.chartCanvasEl.nativeElement, data, options);
   }
 
-  private buildChart() {
-    const chartParams = {
+  private buildChart(chartCanvas: ChartCanvas) {
+
+    const chartOptions = {
       id: 1,
       yExtents: (d: any) => [d.high, d.low]
     };
-    const chartComponents: ChartComponent[] = [];
 
-    const xAxisParams = {
-      axisAt: 'bottom',
-      orient: 'bottom',
-      ticks: 6
-    };
-    const xAxis = new XAxis(xAxisParams);
-    chartComponents.push(xAxis);
+    const chart = chartCanvas.addChart(chartOptions);
 
-    const yAxisParams = {
-      axisAt: 'left',
-      orient: 'left',
-      ticks: 5
-    };
-    const yAxis = new YAxis(yAxisParams);
-    chartComponents.push(yAxis);
+    // const xAxisOptions = {
+    //   axisAt: 'bottom',
+    //   orient: 'bottom',
+    //   ticks: 6
+    // };
+    // chart.addXAxis(xAxisOptions);
 
-    const candlestickSeriesParams = {
-      width: timeIntervalBarWidth(d3.utcDay)
-    };
-    const candlestickSeries = new CandlestickSeries(candlestickSeriesParams);
-    chartComponents.push(candlestickSeries);
+    // const yAxisOptions = {
+    //   axisAt: 'left',
+    //   orient: 'left',
+    //   ticks: 5
+    // };
+    // chart.addYAxis(yAxisOptions);
 
-    return new Chart(chartComponents, chartParams);
+    // const candlestickSeriesOptions = {
+    //   width: timeIntervalBarWidth(d3UtcDay)
+    // };
+    // chart.addCandleStickSeries(candlestickSeriesOptions);
   }
 
   onSelect() {
