@@ -1,17 +1,27 @@
-import { ChartComponent } from '../api/chart-component';
-import * as d3 from 'd3';
 import { candlestickSeriesOptionsDefaults } from '../options/candlestick-series-options-defaults';
 
-export class CandlestickSeries extends ChartComponent {
+import { Selection } from 'd3-selection';
+import { GenericComponent } from '../api/generic-component';
+
+export class CandlestickSeries {
 
   private options: any;
+  private context: any;
 
-  constructor(options?: any) {
-    super();
+  constructor(node: Selection<SVGGElement, unknown, null, undefined>, context: any, options?: any) {
 
     this.options = {
       ...candlestickSeriesOptionsDefaults,
       ...options
     };
+
+    this.context = context;
+
+    const component = new GenericComponent();
+    component.draw();
+  }
+
+  private renderSVG() {
+
   }
 }

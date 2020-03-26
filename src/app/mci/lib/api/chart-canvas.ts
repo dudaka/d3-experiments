@@ -21,7 +21,7 @@ export class ChartCanvas {
   private chartsSvg: Selection<SVGGElement, unknown, null, undefined>;
 
   constructor(svg: Selection<SVGSVGElement, unknown, null, undefined>,
-    data: any[], options?: any) {
+              data: any[], options?: any) {
 
     this.svg = svg;
 
@@ -43,7 +43,7 @@ export class ChartCanvas {
   }
 
   // Add chart
-  addChart(chartOptions: any) {
+  addChart(chartOptions?: any) {
 
     let { chartConfigs } = this.state;
     chartConfigs = chartConfigs ? chartConfigs : new ChartConfigCollection();
@@ -68,8 +68,36 @@ export class ChartCanvas {
 
     this.addChartClipPaths();
 
-    const context = {};
-    return new Chart(context, chartOptions);
+    const context = this.getContext();
+
+    return new Chart(this.chartsSvg, context, chartOptions);
+  }
+
+  private getContext() {
+    const dimensions = this.getDimensions();
+    return {
+      fullData: this.fullData,
+      plotData: this.state.plotData,
+      width: dimensions.width,
+      height: dimensions.height,
+      chartConfigs: this.state.chartConfigs,
+      xScale: this.state.xScale,
+      xAccessor: this.state.xAccessor,
+      displayXAccessor: this.state.displayXAccessor,
+      // chartCanvasType: this.props.type,
+      margin: this.chartCanvasOptions.margin,
+      // ratio: this.props.ratio,
+      // xAxisZoom: this.xAxisZoom,
+      // yAxisZoom: this.yAxisZoom,
+      // getCanvasContexts: this.getCanvasContexts,
+      // redraw: this.redraw,
+      // subscribe: this.subscribe,
+      // unsubscribe: this.unsubscribe,
+      // generateSubscriptionId: this.generateSubscriptionId,
+      // getMutableState: this.getMutableState,
+      // amIOnTop: this.amIOnTop,
+      // setCursorClass: this.setCursorClass
+    };
   }
 
   private addChartClipPaths() {
@@ -79,12 +107,12 @@ export class ChartCanvas {
       const cp = this.defs.select(`#chart-area-clip-${each.id}`);
       if (cp.empty()) {
         this.defs.append('clipPath')
-            .attr('id', `chart-area-clip-${each.id}`)
+          .attr('id', `chart-area-clip-${each.id}`)
           .append('rect')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('width', each.width)
-            .attr('height', each.height);
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', each.width)
+          .attr('height', each.height);
       }
     });
   }

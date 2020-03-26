@@ -1,9 +1,7 @@
-import { ChartComponent } from '../api/chart-component';
-
-export class XAxis extends ChartComponent {
+export class XAxis{
 
   constructor(options?: any) {
-    super();
+
   }
 
 }

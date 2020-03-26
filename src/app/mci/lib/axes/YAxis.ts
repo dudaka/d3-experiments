@@ -1,7 +1,5 @@
-import { ChartComponent } from '../api/chart-component';
-
-export class YAxis extends ChartComponent {
+export class YAxis {
   constructor(options?: any) {
-    super();
+
   }
 }

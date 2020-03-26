@@ -83,10 +83,10 @@ export class CandlestickChartComponent implements OnInit {
     // };
     // chart.addYAxis(yAxisOptions);
 
-    // const candlestickSeriesOptions = {
-    //   width: timeIntervalBarWidth(d3UtcDay)
-    // };
-    // chart.addCandleStickSeries(candlestickSeriesOptions);
+    const candlestickSeriesOptions = {
+      width: timeIntervalBarWidth(d3UtcDay)
+    };
+    chart.addCandleStickSeries(candlestickSeriesOptions);
   }
 
   onSelect() {
