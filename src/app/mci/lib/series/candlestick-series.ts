@@ -17,37 +17,82 @@ export class CandlestickSeries {
       ...candlestickSeriesOptionsDefaults,
       ...options
     };
-
     this.context = context;
+    this.node = node;
 
     const { clip } = this.options;
-
     const componentOptions = {
       clip,
       svgDraw: this.renderSVG
     };
-
-    // console.log(this.context);
-    this.node = node;
-
     const component = new GenericComponent(this.node, this.context, componentOptions);
+
     component.draw();
   }
 
   @Autobind
   private renderSVG(moreProps: any) {
     const { className, wickClassName, candleClassName } = this.options;
+    const { opacity, candleStrokeWidth } = this.options;
     const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
     const candleData = this.getCandleData(xAccessor, xScale, yScale, plotData);
 
-    console.log(candleData);
+    // console.log(candleData);
 
     const candlesticks = this.node.append('g').attr('class', className);
+
     candlesticks.append('g')
-      .attr('class', wickClassName);
-    candlesticks.append('g')
-      .attr('class', candleClassName);
+      .attr('class', wickClassName)
+      .selectAll('path')
+      .data(candleData)
+      .join('path')
+        .attr('class', w => w.className)
+        .attr('stroke', w => w.stroke)
+        .attr('d', w => {
+          // console.log(w);
+          const d = w.wick;
+          const str = `M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`;
+          // console.log(str);
+          return str;
+        });
+
+
+    // console.log(candleData.filter(d => d.width <= 1));
+    // console.log(candleData.filter(d => d.width > 1 && d.height === 0));
+    // console.log(candleData.filter(d => d.width > 1 && d.height !== 0));
+    const candles = candlesticks.append('g').attr('class', candleClassName);
+
+    candles.selectAll('line')
+      .data(candleData.filter(c => c.width <= 1))
+      .join('line')
+        .attr('class', c => c.className)
+        .attr('x1', c => c.x)
+        .attr('y1', c => c.y)
+        .attr('x2', c => c.x)
+        .attr('y2', c => c.y + c.height)
+        .attr('stroke', c => c.fill);
+    candles.selectAll('line')
+      .data(candleData.filter(c => c.width > 1 && c.height === 0))
+      .join('line')
+        .attr('class', c => c.className)
+        .attr('x1', c => c.x)
+        .attr('y1', c => c.y)
+        .attr('x2', c => c.x + c.width)
+        .attr('y2', c => c.y + c.height)
+        .attr('stroke', c => c.fill);
+    candles.selectAll('rect')
+      .data(candleData.filter(c => c.width > 1 && c.height !== 0))
+      .join('rect')
+        .attr('class', c => c.className)
+        .attr('fill-opacity', opacity)
+        .attr('x', c => c.x)
+        .attr('y', c => c.y)
+        .attr('width', c => c.width)
+        .attr('height', c => c.height)
+        .attr('fill', c => c.fill)
+        .attr('stroke', c => c.stroke)
+        .attr('stroke-width', candleStrokeWidth);
 
     // return <g className={ className }>
     //   <g className={ wickClassName } key = "wicks" >

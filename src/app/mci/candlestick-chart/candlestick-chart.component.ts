@@ -69,12 +69,12 @@ export class CandlestickChartComponent implements OnInit {
 
     const chart = chartCanvas.addChart(chartOptions);
 
-    // const xAxisOptions = {
-    //   axisAt: 'bottom',
-    //   orient: 'bottom',
-    //   ticks: 6
-    // };
-    // chart.addXAxis(xAxisOptions);
+    const xAxisOptions = {
+      axisAt: 'bottom',
+      orient: 'bottom',
+      ticks: 6
+    };
+    chart.addXAxis(xAxisOptions);
 
     // const yAxisOptions = {
     //   axisAt: 'left',

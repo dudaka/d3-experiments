@@ -4,6 +4,7 @@ import { CandlestickSeries } from '../series/candlestick-series';
 
 import { Selection } from 'd3-selection';
 import { find } from '../utils';
+import { XAxis } from '../axes/XAxis';
 
 export class Chart {
 
@@ -23,18 +24,27 @@ export class Chart {
     this.render(selection);
   }
 
+  addXAxis(options?: any) {
+    const newContext = this.getContext();
+    return new XAxis(this.chartComponentsG, newContext, options);
+  }
+
   addCandleStickSeries(options?: any) {
+    const newContext = this.getContext();
+    // console.log(newContext);
+    return new CandlestickSeries(this.chartComponentsG, newContext, options);
+  }
+
+  private getContext() {
     const { chartConfigs, ...context } = this.context;
     const chartConfig = find(this.context.chartConfigs, each => each.id === this.chartOptions.id);
-    console.log(chartConfig);
+    // console.log(chartConfig);
     const newContext = {
       ...context,
       chartConfig,
       chartId: chartConfig.id
     };
-
-    // console.log(newContext);
-    const candlestickSeries = new CandlestickSeries(this.chartComponentsG, newContext, options);
+    return newContext;
   }
 
   private render(selection: Selection<SVGGElement, unknown, null, undefined>) {

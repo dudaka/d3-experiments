@@ -27,7 +27,7 @@ export class GenericComponent {
     const { chartId } = this.context;
     const { clip, svgDraw } = this.option;
 
-    console.log(chartId);
+    // console.log(chartId);
 
     // if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
     // 	return null;
@@ -57,7 +57,7 @@ export class GenericComponent {
       height,
     } = this.context;
 
-    console.log('context', this.context);
+    // console.log('context', this.context);
 
     const { chartId, fullData } = this.context;
 
