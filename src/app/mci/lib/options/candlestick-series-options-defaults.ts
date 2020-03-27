@@ -1,9 +1,9 @@
 import { plotDataLengthBarWidth } from '../utils/barWidth';
 
 export const candlestickSeriesOptionsDefaults = {
-  className: 'react-stockcharts-candlestick',
-  wickClassName: 'react-stockcharts-candlestick-wick',
-  candleClassName: 'react-stockcharts-candlestick-candle',
+  className: 'candlestick',
+  wickClassName: 'candlestick-wick',
+  candleClassName: 'candlestick-candle',
   yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
   classNames: d => d.close > d.open ? 'up' : 'down',
   width: plotDataLengthBarWidth,

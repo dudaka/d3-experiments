@@ -127,7 +127,7 @@ export class ChartCanvas {
   private render() {
 
     const { className, width, height, zIndex, margin } = this.chartCanvasOptions;
-    this.svg.append('svg')
+    this.svg
       .attr('class', className)
       .attr('width', width)
       .attr('height', height)

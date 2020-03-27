@@ -25,10 +25,15 @@ export class Chart {
 
   addCandleStickSeries(options?: any) {
     const { chartConfigs, ...context } = this.context;
+    const chartConfig = find(this.context.chartConfigs, each => each.id === this.chartOptions.id);
+    console.log(chartConfig);
     const newContext = {
       ...context,
-      ...find(this.context.chartConfigs, each => each.id === this.chartOptions.id)
+      chartConfig,
+      chartId: chartConfig.id
     };
+
+    // console.log(newContext);
     const candlestickSeries = new CandlestickSeries(this.chartComponentsG, newContext, options);
   }
 
