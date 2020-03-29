@@ -45,8 +45,8 @@ export class ChartConfigCollection implements Aggregator {
   }
 
   private getChartConfig(chart,
-                         innerDimension: { width: number, height: number },
-                         existingChartConfig = []) {
+    innerDimension: { width: number, height: number },
+    existingChartConfig = []) {
     const {
       id,
       origin,
@@ -145,22 +145,22 @@ export class ChartConfigCollection implements Aggregator {
     const chartConfig = this.getNewChartConfig(dimensions);
     const yDomains = chartConfig.map(({ yExtentsCalculator, yExtents, yScale }) => {
 
-        const realYDomain = isDefined(yExtentsCalculator)
-          ? yExtentsCalculator({ plotData, xDomain, xAccessor, displayXAccessor, fullData })
-          : this.yDomainFromYExtents(yExtents, yScale, plotData);
+      const realYDomain = isDefined(yExtentsCalculator)
+        ? yExtentsCalculator({ plotData, xDomain, xAccessor, displayXAccessor, fullData })
+        : this.yDomainFromYExtents(yExtents, yScale, plotData);
 
-        // console.log("yScale.domain() ->", yScale.domain())
+      // console.log("yScale.domain() ->", yScale.domain())
 
-        const yDomainDY = isDefined(dy)
-          ? yScale.range().map(each => each - dy).map(yScale.invert)
-          : yScale.domain();
+      const yDomainDY = isDefined(dy)
+        ? yScale.range().map(each => each - dy).map(yScale.invert)
+        : yScale.domain();
 
-        return {
-          realYDomain,
-          yDomainDY,
-          prevYDomain: yScale.domain(),
-        };
-      });
+      return {
+        realYDomain,
+        yDomainDY,
+        prevYDomain: yScale.domain(),
+      };
+    });
 
     const combine = zipper()
       .combine((config, { realYDomain, yDomainDY, prevYDomain }) => {

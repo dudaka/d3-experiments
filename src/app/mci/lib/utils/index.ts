@@ -1,3 +1,56 @@
+export function mousePosition(e, defaultRect = null) {
+  console.log('[foutside] mousePosition');
+  console.log(e);
+  const container = e.currentTarget;
+  const rect = defaultRect || container.getBoundingClientRect();
+  const x = e.clientX - rect.left - container.clientLeft;
+  const y = e.clientY - rect.top - container.clientTop;
+  const xy = [Math.round(x), Math.round(y)];
+  console.log(xy);
+  return xy;
+}
+
+export function touchPosition(touch, e) {
+  const container = e.target;
+  const rect = container.getBoundingClientRect();
+  const x = touch.clientX - rect.left - container.clientLeft;
+  const y = touch.clientY - rect.top - container.clientTop;
+  const xy = [Math.round(x), Math.round(y)];
+  return xy;
+}
+
+export function getTouchProps(touch) {
+  if (!touch) { return {}; }
+  return {
+    pageX: touch.pageX,
+    pageY: touch.pageY,
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  };
+}
+
+export function d3Window(node) {
+  // console.log('[d3Window]');
+  // console.log(node);
+  // console.log(node.ownerDocument);
+  // console.log(node.ownerDocument.defaultView);
+  // console.log(node.document);
+  // console.log(node.defaultView);
+  const d3win = node
+    && (node.ownerDocument && node.ownerDocument.defaultView
+      || node.document && node
+      || node.defaultView);
+  // console.log(d3win);
+  return d3win;
+}
+
+export const MOUSEENTER = 'mouseenter.interaction';
+export const MOUSELEAVE = 'mouseleave.interaction';
+export const MOUSEMOVE = 'mousemove.pan';
+export const MOUSEUP = 'mouseup.pan';
+export const TOUCHMOVE = 'touchmove.pan';
+export const TOUCHEND = 'touchend.pan touchcancel.pan';
+
 export function getClosestItem(array, value, accessor, log = false) {
   const { left, right } = getClosestItemIndexes(array, value, accessor, log);
 
