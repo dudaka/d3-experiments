@@ -5,6 +5,7 @@ import { CandlestickSeries } from '../series/candlestick-series';
 import { Selection } from 'd3-selection';
 import { find } from '../utils';
 import { XAxis } from '../axes/XAxis';
+import { Autobind } from '../utils/autobind';
 
 export class Chart {
 
@@ -21,7 +22,28 @@ export class Chart {
 
     this.context = context;
 
+    const { subscribe } = this.context;
+    const { id } = this.chartOptions;
+    console.log(subscribe);
+    console.log(id);
+
+    subscribe('chart_' + id, { listener: this.listener });
+
     this.render(selection);
+  }
+
+  @Autobind
+  private listener(type, moreProps, state, e) {
+    console.log('[Chart] - listener');
+    const { id, onContextMenu } = this.chartOptions;
+    console.log(onContextMenu);
+
+    if (type === 'contextmenu') {
+      const { currentCharts } = moreProps;
+      if (currentCharts.indexOf(id) > -1) {
+        onContextMenu(moreProps, e);
+      }
+    }
   }
 
   addXAxis(options?: any) {
@@ -54,6 +76,6 @@ export class Chart {
     const [x, y] = origin as any[];
 
     this.chartComponentsG = selection.append('g')
-      .attr('transform', `translate(${ x }, ${ y })`);
+      .attr('transform', `translate(${x}, ${y})`);
   }
 }

@@ -25,6 +25,8 @@ export class ChartCanvas {
   private waitingForMouseMoveAnimationFrame: boolean;
   private prevMouseXY: any[];
   private mutableState: any;
+  private subscriptions: any[];
+  private lastSubscriptionId: number;
 
   constructor(svg: Selection<SVGSVGElement, unknown, null, undefined>,
     data: any[], options?: any) {
@@ -38,6 +40,8 @@ export class ChartCanvas {
     };
 
     this.mutableState = {};
+    this.subscriptions = [];
+    this.lastSubscriptionId = 0;
 
     // this.charts = [];
     const { fullData, ...state } = this.resetChart(true);
@@ -101,13 +105,51 @@ export class ChartCanvas {
       // yAxisZoom: this.yAxisZoom,
       // getCanvasContexts: this.getCanvasContexts,
       // redraw: this.redraw,
-      // subscribe: this.subscribe,
-      // unsubscribe: this.unsubscribe,
-      // generateSubscriptionId: this.generateSubscriptionId,
-      // getMutableState: this.getMutableState,
+      subscribe: this.subscribe,
+      unsubscribe: this.unsubscribe,
+      generateSubscriptionId: this.generateSubscriptionId,
+      getMutableState: this.getMutableState,
       // amIOnTop: this.amIOnTop,
       // setCursorClass: this.setCursorClass
     };
+  }
+
+  @Autobind
+  private generateSubscriptionId() {
+    console.log('[ChartCanvas] generateSubscriptionId');
+    this.lastSubscriptionId++;
+    return this.lastSubscriptionId;
+  }
+
+  @Autobind
+  private getMutableState() {
+    console.log('[ChartCanvas] getMutableState');
+    return this.mutableState;
+  }
+
+  @Autobind
+  private subscribe(id, rest) {
+    console.log(`[ChartCanvas] subscribe, id = ${id}`, rest);
+    const {
+      getPanConditions = functor({
+        draggable: false,
+        panEnabled: true
+      })
+    } = rest;
+
+    this.subscriptions = this.subscriptions.concat({
+      id,
+      ...rest,
+      getPanConditions
+    });
+
+    console.log(this.subscriptions);
+  }
+
+  @Autobind
+  private unsubscribe(id) {
+    console.log('[ChartCanvas] unsubscribe');
+    this.subscriptions = this.subscriptions.filter(each => each.id !== id);
   }
 
   private addChartClipPaths() {
@@ -475,17 +517,19 @@ export class ChartCanvas {
 
       requestAnimationFrame(() => {
         this.clearMouseCanvas();
-        this.draw({ trigger: "mousemove" });
+        this.draw({ trigger: 'mousemove' });
         this.waitingForMouseMoveAnimationFrame = false;
       });
     }
   }
 
   private draw(props) {
-    console.log("[ChartCanvas] draw");
-    // this.subscriptions.forEach(each => {
-    //   if (isDefined(each.draw)) each.draw(props);
-    // });
+    console.log('[ChartCanvas] draw');
+    this.subscriptions.forEach(each => {
+      if (isDefined(each.draw)) {
+        each.draw(props);
+      }
+    });
   }
 
   private clearMouseCanvas() {

@@ -23,11 +23,12 @@ export class CandlestickSeries {
     const { clip } = this.options;
     const componentOptions = {
       clip,
-      svgDraw: this.renderSVG
+      svgDraw: this.renderSVG,
+      drawOn: ['pan']
     };
     const component = new GenericComponent(this.node, this.context, componentOptions);
 
-    component.draw();
+    // component.draw();
   }
 
   @Autobind
