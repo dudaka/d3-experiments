@@ -5,24 +5,23 @@ import { timeParse as d3TimeParse } from 'd3-time-format';
 import { scaleTime as d3ScaleTime } from 'd3-scale';
 import { utcDay as d3UtcDay } from 'd3-time';
 
-import { last } from '../lib/utils';
-import { ChartCanvas } from '../lib/api/chart-canvas';
-import { timeIntervalBarWidth } from '../lib/utils/barWidth';
-import { createChartCanvas } from '../lib/api/create-chart-canvas';
+import { last } from '../../lib/utils';
+import { ChartCanvas } from '../../lib/api/chart-canvas';
+import { timeIntervalBarWidth } from '../../lib/utils/barWidth';
+import { createChartCanvas } from '../../lib/api/create-chart-canvas';
 
 @Component({
-  selector: 'app-candlestick-chart',
+  // tslint:disable-next-line: component-selector
+  selector: 'candlestick-chart',
   templateUrl: './candlestick-chart.component.html',
   styleUrls: ['./candlestick-chart.component.scss']
 })
 export class CandlestickChartComponent implements OnInit {
 
-  @ViewChild('chartCanvas', { static: true }) private chartCanvasEl: ElementRef;
+  // @ViewChild('chartCanvas', { static: true }) private chartCanvasEl: ElementRef;
+  options: any;
 
-  constructor() { }
-
-  ngOnInit(): void {
-
+  constructor() {
     d3Tsv('assets/data/MSFT.tsv').then((rows: d3.DSVRowArray<string>) => {
       const parseDate = d3TimeParse('%Y-%m-%d');
 
@@ -37,14 +36,32 @@ export class CandlestickChartComponent implements OnInit {
         return d;
       });
 
-      const chartCanvas = this.buildChartCanvas(data);
-      this.buildChart(chartCanvas);
+      const xAccessor = (d: any) => d.date;
+
+      this.options = {
+        data,
+        width: 960,
+        height: 500,
+        margin: { left: 50, right: 50, top: 10, bottom: 30 },
+        xAccessor,
+        xScale: d3ScaleTime(),
+        xExtents: [
+          xAccessor(last(data)),
+          xAccessor(data[data.length - 100])
+        ]
+      };
+
     });
+  }
+
+  ngOnInit(): void {
+
+
   }
 
   private buildChartCanvas(data: any[]) {
     const xAccessor = (d: any) => d.date;
-    const options = {
+    this.options = {
       data,
       width: 960,
       height: 500,
@@ -56,7 +73,7 @@ export class CandlestickChartComponent implements OnInit {
         xAccessor(data[data.length - 100])
       ]
     };
-    return createChartCanvas(this.chartCanvasEl.nativeElement, data, options);
+    // return createChartCanvas(this.chartCanvasEl.nativeElement, data, options);
   }
 
   private buildChart(chartCanvas: ChartCanvas) {

@@ -1,0 +1,13 @@
+<!-- <div (click)="onSelect()" #chartCanvas>
+
+</div> -->
+
+<ng-container *ngIf="options">
+  <chart-canvas [options]="options">
+    <svg:g Chart>
+      <g CandlestickSeries/>
+    </svg:g>
+  </chart-canvas>
+</ng-container>
+
+

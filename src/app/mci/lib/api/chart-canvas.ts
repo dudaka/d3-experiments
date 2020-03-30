@@ -183,7 +183,7 @@ export class ChartCanvas {
       .attr('class', className)
       .attr('width', width)
       .attr('height', height)
-      .style('position', 'absolute')
+      // .style('position', 'absolute')
       .style('z-index', zIndex + 5);
     this.svg.append('style')
       .attr('type', 'text/css')

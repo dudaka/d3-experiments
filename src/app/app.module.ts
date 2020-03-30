@@ -21,7 +21,9 @@ import { ZoomToDomainComponent } from './zoom/zoom-to-domain/zoom-to-domain.comp
 import { PanZoomAxesComponent } from './zoom/pan-zoom-axes/pan-zoom-axes.component';
 import { ProgrammaticPanZoomComponent } from './zoom/programmatic-pan-zoom/programmatic-pan-zoom.component';
 import { RealTimeChartComponent } from './real-time/real-time-chart/real-time-chart.component';
-import { CandlestickChartComponent } from './mci/candlestick-chart/candlestick-chart.component';
+import { TradingChartsModule } from './mci/lib/trading-charts.module';
+import { CandlestickChartComponent } from './mci/charts/candlestick-chart/candlestick-chart.component';
+
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { CandlestickChartComponent } from './mci/candlestick-chart/candlestick-c
     MatListModule,
     MatExpansionModule,
     MatFormFieldModule,
+    TradingChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
