@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { select as d3Select } from 'd3-selection';
 import { ScaleTime as d3ScaleTime } from 'd3-scale';
 import { min as d3Min, max as d3Max } from 'd3-array';
 import { isNotDefined } from '../utils';
 import { chartCanvasOptionDefaults, getCursorStyle } from '../options/chart-canvas-options-defaults';
+import { Autobind } from '../utils/autobind';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -55,33 +56,122 @@ export class ChartCanvasComponent implements OnInit {
 
   // @Input() data: any[];
 
+  @ViewChild('chartCanvas', { static: true}) private chartCanvasEl: ElementRef;
   @ViewChild('svg', { static: true }) private svgEl: ElementRef;
-  private props: any;
+  @ViewChild('charts', { static: true }) private chartsEl: ElementRef;
 
-  constructor() { }
+  private props: any;
+  private state: any;
+
+  constructor(private renderer: Renderer2) {
+    this.state = {};
+  }
 
   ngOnInit(): void {
-
     this.initializeDefaultProperties();
+    this.render();
+  }
 
-    console.log(this.props);
+  private render() {
+    this.setChartCanvasPros();
+    this.setSvgProps();
+  }
 
-    const { className, width, height, zIndex } = this.props;
-
-    this.className = className;
-    this.width = width;
-    this.height = height;
+  private setSvgProps() {
+    const {
+      className,
+      width,
+      height,
+      zIndex,
+      margin
+    } = this.props;
 
     const svg = d3Select(this.svgEl.nativeElement)
       .attr('class', className)
       .attr('width', width)
       .attr('height', height)
       // .style('position', 'absolute')
-      .style('z-index', zIndex + 5);
+      .style('z-index', zIndex + 5)
+      .call(this.setStyle)
+      .call(this.setClipPathDefs);
 
-    svg.append('style')
-      .attr('type', 'text/css')
+    svg.select('g')
+      .attr('transform', `translate(${margin.left + 0.5}, ${margin.top + 0.5})`)
+      .call(this.setEventCapture);
+
+    d3Select(this.chartsEl.nativeElement).attr( 'class', `${className}-avoid-interaction`);
+  }
+
+  @Autobind
+  private setEventCapture(g) {
+
+  }
+
+  @Autobind
+  private setClipPathDefs(g) {
+    const clipPaths = [];
+    const dimensions = this.getDimensions();
+    clipPaths.push({
+      id: 'chart-area-clip',
+      x: '0',
+      y: '0',
+      width: dimensions.width,
+      height: dimensions.height
+    });
+
+    const { chartConfigs } = this.state;
+    if (chartConfigs && chartConfigs.length > 0) {
+      chartConfigs.map(chartConfig => {
+        clipPaths.push({
+          id: `chart-area-clip-${chartConfig.id}`,
+          x: '0',
+          y: '0',
+          width: chartConfig.width,
+          height: chartConfig.height
+        });
+      });
+    }
+
+    g.select('defs')
+      .selectAll('clipPath')
+      .data(clipPaths)
+      .join('clipPath')
+        .attr('id', (clipPath, idx, node) => {
+          d3Select(node[idx])
+            .selectAll('rect')
+            .data([clipPath])
+            .join('rect')
+              .attr('x', 0)
+              .attr('y', 0)
+              .attr('width', d => d.width)
+              .attr('height', d => d.height);
+          return clipPath.id;
+        });
+
+  }
+
+  private getDimensions() {
+    const { height, width, margin } = this.props;
+
+    return {
+      height: height - margin.top - margin.bottom,
+      width: width - margin.left - margin.right
+    };
+  }
+
+  @Autobind
+  private setStyle(g) {
+    const { className } = this.props;
+
+    g.select('style')
       .text(getCursorStyle(className));
+  }
+
+  private setChartCanvasPros() {
+    const { className, width, height } = this.props;
+    this.renderer.addClass(this.chartCanvasEl.nativeElement, className);
+    this.renderer.setStyle(this.chartCanvasEl.nativeElement, 'width', `${width}px`);
+    this.renderer.setStyle(this.chartCanvasEl.nativeElement, 'height', `${height}px`);
   }
 
   private initializeDefaultProperties() {

@@ -1,4 +1,4 @@
-<div [ngStyle]="{ width: width, height: height }" [ngClass]="className">
+<div #chartCanvas>
   <!-- <CanvasContainer
     ref={this.saveCanvasContainerNode}
     type={type}
@@ -8,68 +8,12 @@
     zIndex={zIndex}/> -->
   <!-- <svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: zIndex + 5 }}> -->
   <svg #svg>
-    <!-- {cursor}
-        <defs>
-            <clipPath id="chart-area-clip">
-                <rect
-                    x="0"
-                    y="0"
-                    width={dimensions.width}
-                    height={dimensions.height}
-                />
-            </clipPath>
-            {chartConfig.map((each, idx) => (
-                <clipPath
-                    key={idx}
-                    id={`chart-area-clip-${each.id}`}
-                >
-                    <rect
-                        x="0"
-                        y="0"
-                        width={each.width}
-                        height={each.height}
-                    />
-                </clipPath>
-            ))}
-        </defs>
-        <g
-            transform={`translate(${margin.left +
-                0.5}, ${margin.top + 0.5})`}
-        >
-            <EventCapture
-                ref={this.saveEventCaptureNode}
-                useCrossHairStyleCursor={cursorStyle}
-                mouseMove={mouseMoveEvent && interaction}
-                zoom={zoomEvent && interaction}
-                pan={panEvent && interaction}
-                width={dimensions.width}
-                height={dimensions.height}
-                chartConfig={chartConfig}
-                xScale={xScale}
-                xAccessor={xAccessor}
-                focus={defaultFocus}
-                disableInteraction={this.props.disableInteraction}
-                getAllPanConditions={this.getAllPanConditions}
-                onContextMenu={this.handleContextMenu}
-                onClick={this.handleClick}
-                onDoubleClick={this.handleDoubleClick}
-                onMouseDown={this.handleMouseDown}
-                onMouseMove={this.handleMouseMove}
-                onMouseEnter={this.handleMouseEnter}
-                onMouseLeave={this.handleMouseLeave}
-                onDragStart={this.handleDragStart}
-                onDrag={this.handleDrag}
-                onDragComplete={this.handleDragEnd}
-                onZoom={this.handleZoom}
-                onPinchZoom={this.handlePinchZoom}
-                onPinchZoomEnd={this.handlePinchZoomEnd}
-                onPan={this.handlePan}
-                onPanEnd={this.handlePanEnd}
-            />
-
-            <g className="react-stockcharts-avoid-interaction">
-                <ng-content select="g"></ng-content>
-            </g>
-        </g> -->
+    <style type="text/css"></style>
+    <defs></defs>
+    <g>
+      <g #charts>
+        <ng-content select="g"></ng-content>
+      </g>
+    </g>
   </svg>
 </div>

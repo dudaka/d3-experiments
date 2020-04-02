@@ -54,10 +54,7 @@ export class CandlestickChartComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-
-
-  }
+  ngOnInit(): void { }
 
   private buildChartCanvas(data: any[]) {
     const xAccessor = (d: any) => d.date;
