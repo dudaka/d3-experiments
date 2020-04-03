@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 
 import { tsv as d3Tsv } from 'd3-fetch';
 import { timeParse as d3TimeParse } from 'd3-time-format';
@@ -18,8 +18,9 @@ import { createChartCanvas } from '../../lib/api/create-chart-canvas';
 })
 export class CandlestickChartComponent implements OnInit {
 
-  // @ViewChild('chartCanvas', { static: true }) private chartCanvasEl: ElementRef;
-  options: any;
+  chartCanvasOptions: any;
+  chartOptions: any;
+  candlestickSeriesOptions: any;
 
   constructor() {
     d3Tsv('assets/data/MSFT.tsv').then((rows: d3.DSVRowArray<string>) => {
@@ -38,7 +39,7 @@ export class CandlestickChartComponent implements OnInit {
 
       const xAccessor = (d: any) => d.date;
 
-      this.options = {
+      this.chartCanvasOptions = {
         data,
         width: 960,
         height: 500,
@@ -51,6 +52,11 @@ export class CandlestickChartComponent implements OnInit {
         ]
       };
 
+      this.chartOptions = {
+        id: 1,
+        yExtents: (d: any) => [d.high, d.low]
+      };
+
     });
   }
 
@@ -58,7 +64,7 @@ export class CandlestickChartComponent implements OnInit {
 
   private buildChartCanvas(data: any[]) {
     const xAccessor = (d: any) => d.date;
-    this.options = {
+    this.chartCanvasOptions = {
       data,
       width: 960,
       height: 500,

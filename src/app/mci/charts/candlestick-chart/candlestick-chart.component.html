@@ -2,9 +2,9 @@
 
 </div> -->
 
-<ng-container *ngIf="options">
-  <chart-canvas [options]="options">
-    <svg:g Chart>
+<ng-container *ngIf="chartCanvasOptions && chartOptions">
+  <chart-canvas [options]="chartCanvasOptions">
+    <svg:g Chart [options]="chartOptions">
       <g CandlestickSeries/>
     </svg:g>
   </chart-canvas>

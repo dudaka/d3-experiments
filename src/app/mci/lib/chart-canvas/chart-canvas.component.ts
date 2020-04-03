@@ -1,70 +1,198 @@
-import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, ElementRef, Renderer2, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { select as d3Select } from 'd3-selection';
 import { ScaleTime as d3ScaleTime } from 'd3-scale';
 import { min as d3Min, max as d3Max } from 'd3-array';
-import { isNotDefined } from '../utils';
+import { isNotDefined, functor, isDefined } from '../utils';
 import { chartCanvasOptionDefaults, getCursorStyle } from '../options/chart-canvas-options-defaults';
 import { Autobind } from '../utils/autobind';
+import { ChartComponent } from '../chart/chart.component';
+import { getNewChartConfig, getChartConfigWithUpdatedYScales } from '../utils/chartUtils';
 
+import { extent as d3Extent } from 'd3-array';
+import evaluator from '../scale/evaluator';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'chart-canvas',
   templateUrl: './chart-canvas.component.html',
   styleUrls: ['./chart-canvas.component.scss']
 })
-export class ChartCanvasComponent implements OnInit {
+export class ChartCanvasComponent implements OnInit, AfterContentInit {
 
   @Input() options: any;
-
-  // properties
-  // private plotData: any[];
-  // private fullData: any[];
-  // private chartConfigs: any[];
-  width: number;
-  height: number;
-  // @Input() margin: { left: number, right: number, top: number, bottom: number };
-  className: string;
-  // private zIndex: number;
-  // @Input() xScale: d3ScaleTime<number, number>;
-  // @Input() xAccessor: Function;
-  // @Input() xExtents: any[] | Function;
-  // private displayXAccessor: Function;
-  // // private chartCanvasType: 'svg' | 'hybrid';
-  // // @Input() ratio: number,
-  // private getCanvasContexts: Function;
-  // private xAxisZoom: Function;
-  // private yAxisZoom: Function;
-  // private amIOnTop: Function;
-  // private redraw: Function;
-  // private subscribe: Function;
-  // private unsubscribe: Function;
-  // private setCursorClass: Function
-  // private generateSubscriptionId: Function;
-  // private getMutableState: Function;
-  // private useCrossHairStyleCursor: boolean;
-  // private flipXScale: boolean;
-  // private padding: number;
-  // private clamp: any;
-  // private pointsPerPxThreshold: number;
-  // private minPointsPerPxThreshold: number;
-  // private postCalculator: Function;
-  // private mouseMoveEvent: boolean;
-  // private zoomEvent: boolean;
-  // private panEvent: boolean;
-  // private defaultFocus: boolean;
-  // private disableInteraction: boolean;
-
-  // @Input() data: any[];
 
   @ViewChild('chartCanvas', { static: true}) private chartCanvasEl: ElementRef;
   @ViewChild('svg', { static: true }) private svgEl: ElementRef;
   @ViewChild('charts', { static: true }) private chartsEl: ElementRef;
+  @ContentChildren(ChartComponent) private contentCharts: QueryList<ChartComponent>;
 
   private props: any;
   private state: any;
 
   constructor(private renderer: Renderer2) {
     this.state = {};
+  }
+
+  ngAfterContentInit(): void {
+    const children = this.contentCharts.map(content => content.getProps());
+    this.props = {
+      ...this.props,
+      children
+    };
+
+    const { fullData, ...state } = this.resetChart(true);
+
+    this.setState(state);
+
+    d3Select(this.svgEl.nativeElement).call(this.setClipPathDefs);
+  }
+
+  private setState(state) {
+    this.state = {
+      ...this.state,
+      ...state
+    };
+  }
+
+  private resetChart(isFirstCalculation: boolean) {
+
+    const state = this.calculateState();
+    const { xAccessor, displayXAccessor, fullData } = state;
+    const { plotData: initialPlotData, xScale } = state;
+    // const { postCalculator, children } = props;
+    const { postCalculator, children } = this.props;
+    const dimensions = this.getDimensions();
+
+    const plotData = postCalculator(initialPlotData);
+
+    const chartConfigs = getChartConfigWithUpdatedYScales(
+      getNewChartConfig(children, dimensions),
+      { plotData, xAccessor, displayXAccessor, fullData },
+      xScale.domain()
+    );
+
+    return {
+      ...state,
+      xScale,
+      plotData,
+      chartConfigs
+    };
+
+  }
+
+  private getXScaleDirection(flipXScale: boolean) {
+    return flipXScale ? -1 : 1;
+  }
+
+  private calculateFullData() {
+    const {
+      data: fullData,
+      plotFull,
+      xScale,
+      clamp,
+      pointsPerPxThreshold,
+      flipXScale
+    } = this.props;
+
+    const { xAccessor, displayXAccessor, minPointsPerPxThreshold } = this.props;
+
+    const useWholeData = isDefined(plotFull)
+      ? plotFull
+      : xAccessor === (d => d);
+
+    const { filterData } = evaluator({
+      xScale,
+      useWholeData,
+      clamp,
+      pointsPerPxThreshold,
+      minPointsPerPxThreshold,
+      flipXScale
+    });
+
+    return {
+      xAccessor,
+      displayXAccessor: displayXAccessor || xAccessor,
+      xScale: xScale.copy(),
+      fullData,
+      filterData
+    };
+  }
+
+  private setXRange(xScale, dimensions, padding, direction = 1) {
+    if (xScale.rangeRoundPoints) {
+      if (isNaN(padding)) {
+        throw new Error('padding has to be a number for ordinal scale');
+      }
+      xScale.rangeRoundPoints([0, dimensions.width], padding);
+    } else if (xScale.padding) {
+      if (isNaN(padding)) {
+        throw new Error('padding has to be a number for ordinal scale');
+      }
+      xScale.range([0, dimensions.width]);
+      xScale.padding(padding / 2);
+    } else {
+      const { left, right } = isNaN(padding)
+        ? padding
+        : { left: padding, right: padding };
+      if (direction > 0) {
+        xScale.range([left, dimensions.width - right]);
+      } else {
+        xScale.range([dimensions.width - right, left]);
+      }
+    }
+    return xScale;
+  }
+
+  private calculateState() {
+    const {
+      xAccessor: inputXAccesor,
+      xExtents: xExtentsProp,
+      padding,
+      flipXScale,
+      data
+    } = this.props;
+
+    const direction = this.getXScaleDirection(flipXScale);
+    const dimensions = this.getDimensions();
+
+    const extent = typeof xExtentsProp === 'function'
+      ? xExtentsProp(data)
+      : d3Extent(
+        xExtentsProp
+          .map(d => functor(d))
+          .map(each => each(data, inputXAccesor))
+      );
+
+    const {
+      xAccessor,
+      displayXAccessor,
+      xScale,
+      fullData,
+      filterData
+    } = this.calculateFullData();
+
+    const updatedXScale = this.setXRange(xScale, dimensions, padding, direction);
+
+    const { plotData, domain } = filterData(
+      fullData,
+      extent,
+      inputXAccesor,
+      updatedXScale
+    );
+
+    if (plotData.length <= 1) {
+      throw new Error(
+        `Showing ${plotData.length} datapoints, review the 'xExtents' prop of ChartCanvas`
+      );
+    }
+
+    return {
+      plotData,
+      xScale: updatedXScale.domain(domain),
+      xAccessor,
+      displayXAccessor,
+      fullData,
+      filterData
+    };
   }
 
   ngOnInit(): void {
@@ -120,6 +248,7 @@ export class ChartCanvasComponent implements OnInit {
     });
 
     const { chartConfigs } = this.state;
+    console.log(chartConfigs);
     if (chartConfigs && chartConfigs.length > 0) {
       chartConfigs.map(chartConfig => {
         clipPaths.push({
@@ -175,7 +304,7 @@ export class ChartCanvasComponent implements OnInit {
   }
 
   private initializeDefaultProperties() {
-    console.log(this.options);
+    // console.log(this.options);
     this.props = {
       ...chartCanvasOptionDefaults,
       ...this.options
