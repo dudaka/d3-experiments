@@ -26,7 +26,7 @@ export class CandlestickSeries {
       svgDraw: this.renderSVG,
       drawOn: ['pan']
     };
-    const component = new GenericComponent(this.node, this.context, componentOptions);
+    // const component = new GenericComponent(this.node, this.context, componentOptions);
 
     // component.draw();
   }

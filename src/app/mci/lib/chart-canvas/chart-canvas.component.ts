@@ -10,6 +10,7 @@ import { getNewChartConfig, getChartConfigWithUpdatedYScales } from '../utils/ch
 
 import { extent as d3Extent } from 'd3-array';
 import evaluator from '../scale/evaluator';
+import { Subject } from 'rxjs';
 @Component({
   // tslint:disable-next-line: component-selector
   selector: 'chart-canvas',
@@ -25,8 +26,11 @@ export class ChartCanvasComponent implements OnInit, AfterContentInit {
   @ViewChild('charts', { static: true }) private chartsEl: ElementRef;
   @ContentChildren(ChartComponent) private contentCharts: QueryList<ChartComponent>;
 
+  private subject = new Subject<any>();
+
   private props: any;
   private state: any;
+  fullData: any;
 
   constructor(private renderer: Renderer2) {
     this.state = {};
@@ -34,16 +38,52 @@ export class ChartCanvasComponent implements OnInit, AfterContentInit {
 
   ngAfterContentInit(): void {
     const children = this.contentCharts.map(content => content.getProps());
+
     this.props = {
       ...this.props,
       children
     };
 
     const { fullData, ...state } = this.resetChart(true);
+    this.fullData = fullData;
 
     this.setState(state);
 
     d3Select(this.svgEl.nativeElement).call(this.setClipPathDefs);
+
+    this.contentCharts.map(content => {
+      content.setSubscription(this.subject);
+      content.setContext(this.getChildrenContext());
+    });
+
+    this.subject.next('done');
+  }
+
+  private getChildrenContext() {
+    const dimensions = this.getDimensions();
+    return {
+      fullData: this.fullData,
+      plotData: this.state.plotData,
+      width: dimensions.width,
+      height: dimensions.height,
+      chartConfigs: this.state.chartConfigs,
+      xScale: this.state.xScale,
+      xAccessor: this.state.xAccessor,
+      displayXAccessor: this.state.displayXAccessor,
+      // chartCanvasType: this.props.type,
+      margin: this.props.margin,
+      // ratio: this.props.ratio,
+      // xAxisZoom: this.xAxisZoom,
+      // yAxisZoom: this.yAxisZoom,
+      // getCanvasContexts: this.getCanvasContexts,
+      // redraw: this.redraw,
+      // subscribe: this.subscribe,
+      // unsubscribe: this.unsubscribe,
+      // generateSubscriptionId: this.generateSubscriptionId,
+      // getMutableState: this.getMutableState,
+      // amIOnTop: this.amIOnTop,
+      // setCursorClass: this.setCursorClass
+    };
   }
 
   private setState(state) {

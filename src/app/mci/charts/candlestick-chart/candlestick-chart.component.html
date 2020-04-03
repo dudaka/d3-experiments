@@ -5,7 +5,7 @@
 <ng-container *ngIf="chartCanvasOptions && chartOptions">
   <chart-canvas [options]="chartCanvasOptions">
     <svg:g Chart [options]="chartOptions">
-      <g CandlestickSeries/>
+      <g CandlestickSeries [options]="candlestickSeriesOptions"/>
     </svg:g>
   </chart-canvas>
 </ng-container>

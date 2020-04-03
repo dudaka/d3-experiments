@@ -57,27 +57,15 @@ export class CandlestickChartComponent implements OnInit {
         yExtents: (d: any) => [d.high, d.low]
       };
 
+      this.candlestickSeriesOptions = {
+        width: timeIntervalBarWidth(d3UtcDay)
+      };
+
     });
   }
 
   ngOnInit(): void { }
 
-  private buildChartCanvas(data: any[]) {
-    const xAccessor = (d: any) => d.date;
-    this.chartCanvasOptions = {
-      data,
-      width: 960,
-      height: 500,
-      margin: { left: 50, right: 50, top: 10, bottom: 30 },
-      xAccessor,
-      xScale: d3ScaleTime(),
-      xExtents: [
-        xAccessor(last(data)),
-        xAccessor(data[data.length - 100])
-      ]
-    };
-    // return createChartCanvas(this.chartCanvasEl.nativeElement, data, options);
-  }
 
   private buildChart(chartCanvas: ChartCanvas) {
 
